@@ -32,4 +32,3 @@ for item in resp_json["response"]:
 
 print(tabulate(host_list, headers=["Hostname","IP","Interfaz", "Vlan", "Status"],tablefmt='rst'))    
 
-# JAAA DEJASTE LA PC A MI DISPOSICION MOMENTO DE DESCARGAR LINUX JUAJUAJUAJUAJUA
