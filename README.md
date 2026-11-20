@@ -1,45 +1,45 @@
-# Entorno de virtualización Python
+# Scripts del Network Controller
 
-# Pasos de instalación en Linux:
+Conjunto de scripts en Python que consumen la API REST del Network Controller de Packet Tracer para consultar y listar la información de la topología.
 
-## 1. Clonación del proyecto
+## Requisitos
 
-Desde la terminal ejecutar:
+- Python 3
+- Librerías: `requests` y `tabulate`
+- Conectividad IP con el Network Controller
 
-**git clone** <URL_del_repositorio> <nombre_de_la_carpeta_de_destino>
+```bash
+pip install requests tabulate
+```
 
-Luego ejecutar **cd** <nombre_de_la_carpeta_de_destino>. Esta carpeta será la raíz de nuestro proyecto en Python.
+## Detalle de cada script
 
-## 2. Creación del entorno virtual
+### 01_get-ticket.py
+Hace una solicitud de service ticket para poder utilizar la API del Network Controller. En caso exitoso, devuelve el código del service ticket.
 
-Supongamos que el nombre que le damos al entorno virtual es **cisco**, entonces se creará una carpeta **cisco** con todas las librerías y dependencias necesarias paea nuestro proyecto. 
+### 02_get-network-device.py
+Retorna la lista de los distintos dispositivos (routers y switches) que integran la topología. Además, indica sus modelos y su dirección IPv4 correspondiente.
 
-La manera de realizarlo es la siguiente:
+### 03_get-host.py
+Lista todos los hosts que forman parte de la topología (PCs y servers). Junto a ellos, muestra sus direcciones IPv4 e IPv6, además de la interfaz a la que están conectados.
 
-# python3 -m venv <nombre_del_entorno>
-Ejemplo: python3 -m venv cisco
+### 04_tabulate.py
+De forma tabulada, devuelve una lista de hosts y dispositivos de la topología:
 
-Para activar el entorno escribimos **source cisco/bin/activate**, en la carpeta raíz del proyecto. El nombre del entorno virtual aparecerá entre paréntesis ().
+- **Hosts:** tipo e IPv4 asignada.
+- **Dispositivos:** número de serie y versión de software.
 
-## 3. Instalación de las dependencias, en este caso las librerías requests y tabulate
+### 05_get-siteHealth.py
+Comando personal. Lista todos los equipos registrados por el Network Controller. Además del hostname, muestra:
 
-En la carpeta raíz de nuestro proyecto y dentro del entorno virtual escribimos: **pip install -r requirements.txt**
+- IP e interfaz correspondiente.
+- VLAN a la que pertenece cada equipo.
 
-## 4. Selección del intérprete Python para nuestro entorno virtual
+## Uso
 
-<img width="881" height="118" alt="image" src="https://github.com/user-attachments/assets/18c41d8e-d338-48b6-953c-b2499c57319f" />
+Ejecutar primero `01_get-ticket.py` para verificar que la autenticación funciona, y luego cualquiera de los demás scripts:
 
-<img width="736" height="412" alt="image" src="https://github.com/user-attachments/assets/2a795fcd-2cf8-47ef-a5a6-d21e09ce967f" />
-
-Tal como se ve en la figura seleccionamos Python 3.10.12 (cisco) que se mostrará como entorno recomendado.
-
-## 5. Desactivación del entorno virtual
-
-Simplemente escribimos en la línea de comandos: **deactivate**
-
-
-
-## Antes de ejecutar los scripts
-
-- **Credenciales del controlador:** los scripts usan el usuario `cisco` y la clave `cisco123!`. Si en tu Network Controller creaste otro usuario, cambialos en `01_get-ticket.py` y en `04_tabulate.py`.
-- **Ticket (X-Auth-Token):** `02_get-network-device.py` y `03_get-host.py` traen escrito un ticket de ejemplo que **no va a funcionar** en tu Packet Tracer, porque el controlador genera uno nuevo en cada sesión y vence. Ejecutá primero `01_get-ticket.py`, copiá el ticket que muestra y reemplazalo en el header `X-Auth-Token` de esos dos scripts. `04_tabulate.py` no necesita este paso: pide el ticket solo.
+```bash
+python 01_get-ticket.py
+python 02_get-network-device.py
+```
